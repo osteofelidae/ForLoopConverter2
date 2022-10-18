@@ -25,7 +25,7 @@ def findIndentLevel(strInput):
 
 def removeNextLine(arrayInput):
     arrayOperation = arrayInput
-    for number in range(len(arrayOperation)-1):
+    for number in range(len(arrayOperation)-2):
         item = arrayOperation[number]
         arrayOperation[number] = item[0:-1]
     return arrayOperation
@@ -38,8 +38,23 @@ def removeIndent(strInput):
         strOutput = strInput
     return strOutput
 
+def getVariableName(strInput):
+    endIndex = strInput.index(" in ")
+    strOutput = strInput[4:endIndex]
+    return strOutput
+
 def getCondition(strInput):
-    
+    startIndex = strInput.index(" in ") + 4
+    strOutput = strInput[startIndex:-1]
+    return strOutput
+
+def findForItems(arrayInput, indentLevelInput):
+    lineCount = 0
+    arrayOutput = []
+    while findIndentLevel(arrayInput[lineCount]) > indentLevelInput:
+        arrayOutput.append(arrayInput[lineCount])
+        lineCount += 1
+    return arrayOutput
 
 inFileName = input("Input input file path... ")
 outFileName = input("Input output file path... ")
@@ -48,6 +63,7 @@ inFile = open(inFileName, "r")
 outFile = open(outFileName, "w")
 
 inFileArray = inFile.readlines()
+inFileArray.append("#END OF FILE")
 outFileArray = []
 inFile.close()
 
@@ -57,17 +73,28 @@ print(inFileArray)
 
 lineCount = 0
 inFileArrayLength = len(inFileArray)
-while lineCount <= inFileArrayLength:
+
+while lineCount < inFileArrayLength:
+    
     line = inFileArray[lineCount]
     rawLine = removeIndent(line)
     indentLevel = findIndentLevel(line)
+    
     if rawLine[:3] == "for":
-        forLoopList = []
-        startLine = lineCount
-        currentLine = lineCount
-        while findIndentLevel(inFileArray[currentLine]) > indentLevel:
-            forLoopList.append(inFileArray[currentLine])
-            currentLine += 1
-        endLine = currentLine
+        arrayCheck = inFileArray[lineCount+1:]
+        forItems = findForItems(arrayCheck, indentLevel)
+        
+        print(arrayCheck)
+        print(forItems)
+        
     lineCount += 1
     inFileArrayLength = len(inFileArray)
+        
+        
+        
+        
+        
+        
+        
+        
+        
