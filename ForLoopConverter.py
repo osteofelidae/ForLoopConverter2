@@ -1,18 +1,21 @@
 import string
 
-def checkVar(varIndex, strInput):
-    strInput = " " + strInput + " "
-    if not((strInput[varIndex]) in string.ascii_lowercase) and not((strInput[varIndex+2]) in string.ascii_lowercase):
+def checkVar(varIndex, varName, strInput):
+    varNameLength = len(varName)
+    strInputProcessed = " " + strInput + " "
+    strOperation = strInputProcessed[varIndex:varIndex + varNameLength + 2]
+    if not(strOperation[0] in string.ascii_lowercase) and not(strOperation[-1] in string.ascii_lowercase) and strOperation[1:-1] == varName:
         return True
     else:
         return False
     
 def findVars(varName, strInput):
     indexList = []
-    for checkIndex in range(len(strInput)):
-        if checkVar(checkIndex, strInput) and (strInput[checkIndex] == varName):
-            indexList.append(checkIndex)
+    for index in range(len(strInput)):
+        if checkVar(index, varName, strInput):
+            indexList.append(index)
     return indexList
+    
 
 def findIndentLevel(strInput):
     spaceCount = 0
@@ -58,31 +61,26 @@ def findForItems(arrayInput, indentLevelInput):
 
 def parseCondition(strInput):
     strOutput = str(strInput)
-    arrayOutput = []
-    if strOutput[0] == "[":
-        strOutput = strOutput[1:-1]
-        arrayOutput = strOutput.split(',')
-        
-        index = 0
-        for index in range(len(arrayOutput)):
-            if arrayOutput[index][0] == " ":
-                arrayOutput[index] = arrayOutput[index][1:]
-            if arrayOutput[index][0] == "'" or arrayOutput[index][0] == '"':
-                arrayOutput[index] = arrayOutput[index][1:-1]
-                
-        index = 0
-        for index in range(len(arrayOutput)):
-            try:
-                arrayOutput[index] = float(arrayOutput[index])
-            except:
-                continue
-        return arrayOutput
-    else:
-        try:
-            codeOutput = eval(strOutput)
-            return codeOutput
-        except:
-            print("Error in parsing for loop condition.")
+    codeOutput = eval(strOutput)
+    return codeOutput
+
+def deleteString(startIndex, stopIndex, strInput):
+    strOutput = strInput
+    strOutput = strOutput[:startIndex] + strOutput[stopIndex:]
+    return strOutput
+
+def replaceMultiple(strReplacer, strToReplace, strInput, arrayReplaceIndexes):
+    lengthArrayReplace = len(arrayReplaceIndexes)
+    lengthStrToReplace = len(strToReplace)
+    lengthStrReplacer = len(strReplacer)
+    strOutput = strInput
+    for index in range(lengthArrayReplace):
+        replaceIndex = arrayReplaceIndexes[index]
+        strOutput = deleteString(replaceIndex, replaceIndex + lengthStrToReplace, strOutput)
+        strOutput = strOutput[:replaceIndex] + strReplacer + strOutput[replaceIndex:]
+        for index2 in range(lengthArrayReplace):
+            arrayReplaceIndexes[index2] += lengthStrReplacer - lengthStrToReplace
+    return(strOutput)
 
 
 
@@ -121,7 +119,12 @@ while lineCount < inFileArrayLength:
         
         appendList = []
         
-        
+        lineCount2 = 0
+        forLineLength = len()
+        for loopVar in parseCondition(forCondition):
+            for line in forItems:
+                varIndexes = findVars(forVar, line)
+                
         
         for tempVar in range(len(forItems)):
             del inFileArray[lineCount+1]
