@@ -97,7 +97,10 @@ inFile.close()
 
 
 inFileArray = removeNextLine(inFileArray)
+
+print("File contents:")
 print(inFileArray)
+print("")
 
 lineCount = 0
 inFileArrayLength = len(inFileArray)
@@ -114,21 +117,31 @@ while lineCount < inFileArrayLength:
         forCondition = findCondition(rawLine)
         forVar = findVarName(rawLine)
         
+        print("For found!")
+        print("Lines to check indent:")
         print(arrayCheck)
+        print("")
+        print("Lines in for loop:")
         print(forItems)
+        print("")
+        print("Variable name to search for:")
+        print(forVar)
         
         appendList = []
         
-        lineCount2 = 0
-        forLineLength = len()
         for loopVar in parseCondition(forCondition):
-            for line in forItems:
-                varIndexes = findVars(forVar, line)
-                
+            for line2 in forItems:
+                operationLine = line2
+                varIndexes = findVars(forVar, operationLine)
+                operationLine = replaceMultiple(str(loopVar), forVar, operationLine, varIndexes)
+                appendList.append(operationLine)
         
         for tempVar in range(len(forItems)):
             del inFileArray[lineCount+1]
+            
         print(inFileArray)
+        
+        #ADD CODE FOR ADDING appendList
         
     lineCount += 1
     inFileArrayLength = len(inFileArray)
