@@ -38,12 +38,12 @@ def removeIndent(strInput):
         strOutput = strInput
     return strOutput
 
-def getVariableName(strInput):
+def findVarName(strInput):
     endIndex = strInput.index(" in ")
     strOutput = strInput[4:endIndex]
     return strOutput
 
-def getCondition(strInput):
+def findCondition(strInput):
     startIndex = strInput.index(" in ") + 4
     strOutput = strInput[startIndex:-1]
     return strOutput
@@ -55,6 +55,36 @@ def findForItems(arrayInput, indentLevelInput):
         arrayOutput.append(arrayInput[lineCount])
         lineCount += 1
     return arrayOutput
+
+def parseCondition(strInput):
+    strOutput = str(strInput)
+    arrayOutput = []
+    if strOutput[0] == "[":
+        strOutput = strOutput[1:-1]
+        arrayOutput = strOutput.split(',')
+        
+        index = 0
+        for index in range(len(arrayOutput)):
+            if arrayOutput[index][0] == " ":
+                arrayOutput[index] = arrayOutput[index][1:]
+            if arrayOutput[index][0] == "'" or arrayOutput[index][0] == '"':
+                arrayOutput[index] = arrayOutput[index][1:-1]
+                
+        index = 0
+        for index in range(len(arrayOutput)):
+            try:
+                arrayOutput[index] = float(arrayOutput[index])
+            except:
+                continue
+        return arrayOutput
+    else:
+        try:
+            codeOutput = eval(strOutput)
+            return codeOutput
+        except:
+            print("Error in parsing for loop condition.")
+
+
 
 inFileName = input("Input input file path... ")
 outFileName = input("Input output file path... ")
@@ -83,9 +113,19 @@ while lineCount < inFileArrayLength:
     if rawLine[:3] == "for":
         arrayCheck = inFileArray[lineCount+1:]
         forItems = findForItems(arrayCheck, indentLevel)
+        forCondition = findCondition(rawLine)
+        forVar = findVarName(rawLine)
         
         print(arrayCheck)
         print(forItems)
+        
+        appendList = []
+        
+        
+        
+        for tempVar in range(len(forItems)):
+            del inFileArray[lineCount+1]
+        print(inFileArray)
         
     lineCount += 1
     inFileArrayLength = len(inFileArray)
