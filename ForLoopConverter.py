@@ -138,13 +138,25 @@ while lineCount < inFileArrayLength:
         
         for tempVar in range(len(forItems)):
             del inFileArray[lineCount+1]
+        del inFileArray[lineCount]
             
         print(inFileArray)
         
-        #ADD CODE FOR ADDING appendList
+        insertIndex = lineCount
+        for line2 in appendList:
+            tempLineContents = (" " * 5 * indentLevel) + line2[4:]
+            inFileArray.insert(insertIndex, tempLineContents)
+            insertIndex += 1
+            
+        print(inFileArray)
         
     lineCount += 1
     inFileArrayLength = len(inFileArray)
+
+for line in inFileArray:
+    outFile.writelines(line+"\n")
+
+outFile.close()
         
         
         
