@@ -158,11 +158,5 @@ for line in inFileArray:
 
 outFile.close()
         
-        
-        
-        
-        
-        
-        
-        
-        
+#TODO: add checking back in the program for array inputs into for loop
+#      --> maybe just find all array declarations in program and run them
