@@ -20,9 +20,10 @@ def findVars(varName, strInput):
 def findIndentLevel(strInput):
     spaceCount = 0
     checkIndex = 0
-    while strInput[checkIndex] == " ":
-        spaceCount += 1
-        checkIndex += 1
+    if strInput != "":
+        while strInput[checkIndex] == " ":
+            spaceCount += 1
+            checkIndex += 1
     indentLevel = int(spaceCount / 4)
     return indentLevel
 
@@ -59,8 +60,11 @@ def findForItems(arrayInput, indentLevelInput):
         lineCount += 1
     return arrayOutput
 
-def parseCondition(strInput):
+def parseCondition(strInput, arrayInput):
     strOutput = str(strInput)
+    varDefinitions = findVarDefinitions(arrayInput)
+    for line in varDefinitions:
+        exec(line)
     codeOutput = eval(strOutput)
     return codeOutput
 
@@ -82,6 +86,16 @@ def replaceMultiple(strReplacer, strToReplace, strInput, arrayReplaceIndexes):
             arrayReplaceIndexes[index2] += lengthStrReplacer - lengthStrToReplace
     return(strOutput)
 
+def findVarDefinitions(arrayInput):
+    arrayOutput = []
+    for line in arrayInput:
+        lineNoSpaces = line.replace(" ", "")
+        if "=" in lineNoSpaces and not("=="  in lineNoSpaces):
+            arrayOutput.append(line)
+            
+    return arrayOutput
+            
+
 
 
 inFileName = input("Input input file path... ")
@@ -97,6 +111,14 @@ inFile.close()
 
 
 inFileArray = removeNextLine(inFileArray)
+
+inFileArrayNoIndent = []
+
+for line in inFileArray:
+    if findIndentLevel(line) > 0:
+        inFileArrayNoIndent.append(removeIndent(line))
+    else:
+        inFileArrayNoIndent.append(line)
 
 print("File contents:")
 print(inFileArray)
@@ -129,7 +151,7 @@ while lineCount < inFileArrayLength:
         
         appendList = []
         
-        for loopVar in parseCondition(forCondition):
+        for loopVar in parseCondition(forCondition, inFileArrayNoIndent):
             for line2 in forItems:
                 operationLine = line2
                 varIndexes = findVars(forVar, operationLine)
